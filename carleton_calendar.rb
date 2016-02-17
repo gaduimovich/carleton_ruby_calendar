@@ -6,48 +6,47 @@ require './course'
 
 class CarletonCalendar
 	def initialize(student_number, pin)
-	    @mechanize = Mechanize.new { |agent|
-	      agent.user_agent_alias = 'Mac Safari'
-	    }
-	    authenticator = Authenticator.new(@mechanize)
-	    authenticator.login(student_number, pin)
-	 end
+		@mechanize = Mechanize.new { |agent|
+			agent.user_agent_alias = 'Mac Safari'
+		}
+		authenticator = Authenticator.new(@mechanize)
+		authenticator.login(student_number, pin)
+	end
 
-	 def start()
+	def start()
+		year = ""
+		term = ""
 
-			year = ""
-			term = ""
-
+		puts "Enter the year of the calendar you want: "
+		while line = gets.chomp
 			puts "Enter the year of the calendar you want: "
-			while line = gets.chomp
-				puts "Enter the year of the calendar you want: "
-			  if (line =~ /\A\d{4}\z/) then
-			  	year << line
-					break
-				end
+			if (line =~ /\A\d{4}\z/) then
+				year << line
+				break
 			end
+		end
 
+		puts "Enter the Semester(Winter, Summer, Fall):"
+		while line = gets.chomp
 			puts "Enter the Semester(Winter, Summer, Fall):"
-			while line = gets.chomp
-				puts "Enter the Semester(Winter, Summer, Fall):"
-				if (line =~ /(Winter|Summer|Fall)/) then
-					term << line
-					break
-				end
+			if (line =~ /(Winter|Summer|Fall)/) then
+				term << line
+				break
 			end
+		end
 
-			calendar = CalendarFetcher.new(@mechanize)
-			courses = calendar.fetch_calendar(year, term)
+		calendar = CalendarFetcher.new(@mechanize)
+		courses = calendar.fetch_calendar(year, term)
 
-			unless courses.empty? then
-				courses.each do |item|
-					item.print()
-				end
-			else
-				puts "Nothing to See"
+		unless courses.empty? then
+			courses.each do |item|
+				item.print()
 			end
+		else
+			puts "Nothing to See"
+		end
 
-	 end
+	end
 
 end
 
@@ -59,5 +58,5 @@ if ARGV.length == 2 then
 		puts "Try Again: student_number pin"
 	end
 else
-    puts "Restart with more Args!"
+	puts "Restart with more Args!"
 end
